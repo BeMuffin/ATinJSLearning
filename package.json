@@ -9,6 +9,14 @@
     "wdio": "wdio ./_dist/wdio.conf.js",
     "build": "tsc -p tsconfig.json"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": ["eslint --fix", "git add"]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BeMuffin/ATinJSLearning.git"
@@ -20,6 +28,8 @@
   },
   "homepage": "https://github.com/BeMuffin/ATinJSLearning#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
     "@wdio/browser-runner": "^8.7.0",
     "@wdio/cli": "^8.8.8",
     "@wdio/cucumber-framework": "^8.8.7",
@@ -28,7 +38,9 @@
     "@wdio/types": "^8.8.7",
     "chromedriver": "^112.0.0",
     "dotenv": "^16.0.3",
+    "eslint": "^8.39.0",
     "fs-extra": "^11.1.1",
+    "husky": "^8.0.3",
     "log4js": "^6.9.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
