@@ -4,11 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:ui": "npm run build && wdio ./_dist/config/config.js",
+    "test:ui": "npm run build && wdio ./_dist/wdio.conf.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "wdio": "wdio run ./wdio.conf.ts",
-    "build": "npm run zx scripts/build.mjs",
-    "zx": "node node_modules/zx/zx.mjs"
+    "wdio": "wdio ./_dist/wdio.conf.js",
+    "build": "tsc -p tsconfig.json"
   },
   "repository": {
     "type": "git",

@@ -6,6 +6,8 @@ import * as path from 'path';
 dotenv.config();
 import fs from 'fs-extra'
 
+const projectDir = path.join(__dirname, '..');
+
 export const config: Options.Testrunner = {
     //
     // ====================
@@ -41,7 +43,7 @@ export const config: Options.Testrunner = {
     // will be called from there.
     //
     specs: [
-        './src/ui/features/**/*.feature'
+        `${projectDir}/src/ui/features/**/*.feature`
     ],
     // Patterns to exclude.
     exclude: [
@@ -181,7 +183,9 @@ export const config: Options.Testrunner = {
     // If you are using Cucumber you need to specify the location of your step definitions.
     cucumberOpts: {
         // <string[]> (file/dir) require files before executing features
-        require: ['./src/ui/steps/**/*.steps.ts'],
+        require: [`${projectDir}/_dist/src/ui/steps/**/*.steps.js`],
+
+        feauture:[`${projectDir}/src/ui/features/**/*.feature`],
         // <boolean> show full backtrace for errors
         backtrace: false,
         // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
