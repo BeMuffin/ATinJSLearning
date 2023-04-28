@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:ui": "npm run build && wdio ./_dist/wdio.conf.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:ui": "npm run build && npm run lint wdio ./_dist/wdio.conf.js",
     "wdio": "wdio ./_dist/wdio.conf.js",
+    "lint": "eslint \"**/*.{js,ts,tsx}\" --fix",
     "build": "tsc -p tsconfig.json"
   },
   "husky": {
