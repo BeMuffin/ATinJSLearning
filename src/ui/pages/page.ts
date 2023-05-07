@@ -1,4 +1,4 @@
-import { waitForFullPageLoad } from "../../utils/browser/pageLoadWaiter";
+import { waitForFullPageLoad } from '../../utils/browser/pageLoadWaiter';
 
 export default abstract class Page {
   url = 'https://rp.epam.com/ui';

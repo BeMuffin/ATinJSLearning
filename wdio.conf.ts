@@ -1,19 +1,12 @@
-import type { Options } from '@wdio/types'
-import ReportPortalReporter from 'wdio-reportportal-reporter'
-import {RpService}  from 'wdio-reportportal-service'
+import { hooks } from './wdio-hooks';
 import * as dotenv from 'dotenv'
 import * as path from 'path';
 dotenv.config();
-import fs from 'fs-extra'
 
-const projectDir = path.join(__dirname, '..');
+const projectDir = path.join(__dirname, '');
+console.log(`!!!!!!!!!!!!!!!!!!!${projectDir}`)
 
-export const config: Options.Testrunner = {
-    //
-    // ====================
-    // Runner Configuration
-    // ====================
-    // WebdriverIO supports running e2e tests as well as unit and component tests.
+export const config: WebdriverIO.Config = {
     runner: 'local',
     autoCompileOpts: {
         autoCompile: true,
@@ -23,25 +16,6 @@ export const config: Options.Testrunner = {
         }
     },
 
-
-
-
-    //
-    // ==================
-    // Specify Test Files
-    // ==================
-    // Define which test specs should run. The pattern is relative to the directory
-    // of the configuration file being run.
-    //
-    // The specs are defined as an array of spec files (optionally using wildcards
-    // that will be expanded). The test for each spec file will be run in a separate
-    // worker process. In order to have a group of spec files run in the same worker
-    // process simply enclose them in an array within the specs array.
-    //
-    // If you are calling `wdio` from an NPM script (see https://docs.npmjs.com/cli/run-script),
-    // then the current working directory is where your `package.json` resides, so `wdio`
-    // will be called from there.
-    //
     specs: [
         `${projectDir}/src/ui/features/**/*.feature`
     ],
@@ -206,7 +180,8 @@ export const config: Options.Testrunner = {
         timeout: 60000,
         // <boolean> Enable this config to treat undefined definitions as warnings.
         ignoreUndefinedDefinitions: false
-    },
+    } as WebdriverIO.CucumberOpts,
+    ...hooks,
 
     //
     // =====
@@ -306,32 +281,6 @@ export const config: Options.Testrunner = {
      * @param {number}             result.duration  duration of scenario in milliseconds
      * @param {object}             context          Cucumber World object
      */
-    afterStep: async function (step, scenario, result, context) {
-      const screenshotDir = './reports/rp-results/screenshots/';
-      if (result.error) {
-        const timestamp = new Date().toISOString().replace(/[:]/g, '-');
-        const screenshotPath = path.join(screenshotDir, `${timestamp}.png`);
-        const screenshot = await browser.takeScreenshot();
-        fs.outputFileSync(screenshotPath, screenshot, { encoding: 'base64' });
-        ReportPortalReporter.sendLog('ERROR', {
-          level: 'error',
-          file: {
-            name: `${timestamp}.png`,
-            data: screenshot,
-            type: 'image/png',
-          },
-        });
-      }
-    },
-    //   if (!result.passed) {
-    //     let failureObject = {type:'',error:context,title:''};
-    //     failureObject.type = step.type;
-    //     failureObject.title = `${step.id}${step.text}`;
-    //     const screenShot = await global.browser.takeScreenshot();
-    //     let attachment = Buffer.from(screenShot, 'base64');
-    //     ReportPortalReporter.sendFileToTest(failureObject, 'ERROR', "screnshot.png", attachment);
-    // }
-
 
     /**
      *
@@ -388,10 +337,7 @@ export const config: Options.Testrunner = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
-    onComplete: async function (_, config) {
-      const link = await RpService.getLaunchUrl(config);
-      console.log(`Report portal link ${link}`)
-    }
+
     /**
     * Gets executed when a refresh happens.
     * @param {string} oldSessionId session ID of the old session
@@ -399,4 +345,5 @@ export const config: Options.Testrunner = {
     */
     // onReload: function(oldSessionId, newSessionId) {
     // }
+
 }

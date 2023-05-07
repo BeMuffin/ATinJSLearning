@@ -3,7 +3,7 @@
         "moduleResolution": "node",
         "module": "commonjs",
         "esModuleInterop": true,
-        "outDir": "_dist",
+        "outDir": "_dist/",
         "types": [
             "node",
             "@wdio/globals/types",
@@ -13,9 +13,10 @@
         "target": "es2022",
         "skipLibCheck": true
     },
+    "include": ["src/**/*.ts", "*.ts"],
     "exclude": [
         "node_modules/",
-        ".vscode",
+        ".vscode/",
         ".github/",
         "reports/"
     ]
