@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv'
 import * as path from 'path';
 dotenv.config();
 
-const projectDir = path.join(__dirname, '');
+const projectDir = path.join(__dirname, '').replace(/\\/g, '/')
 console.log(`!!!!!!!!!!!!!!!!!!!${projectDir}`)
 
 export const config: WebdriverIO.Config = {
@@ -17,7 +17,7 @@ export const config: WebdriverIO.Config = {
     },
 
     specs: [
-        `${projectDir}/src/ui/features/**/*.feature`
+        `../src/ui/features/**/*.feature`
     ],
     // Patterns to exclude.
     exclude: [
@@ -52,8 +52,16 @@ export const config: WebdriverIO.Config = {
         // 5 instances get started at a time.
         maxInstances: 5,
         //
+        acceptInsecureCerts: true,
         browserName: 'chrome',
-        acceptInsecureCerts: true
+        'goog:chromeOptions': {
+          args: [
+            '--headless',
+            '--disable-gpu',
+            '--no-sandbox',
+            '--disable-dev-shm-usage',
+          ],
+        },
         // If outputDir is provided WebdriverIO can capture driver session logs
         // it is possible to configure which logTypes to include/exclude.
         // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
@@ -106,7 +114,7 @@ export const config: WebdriverIO.Config = {
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
-    services: ['chromedriver'],
+    services: ['chromedriver','docker'],
 
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
@@ -155,11 +163,12 @@ export const config: WebdriverIO.Config = {
 
     //
     // If you are using Cucumber you need to specify the location of your step definitions.
+
     cucumberOpts: {
         // <string[]> (file/dir) require files before executing features
-        require: [`${projectDir}/_dist/src/ui/steps/**/*.steps.js`],
+        require: [`${projectDir}/src/ui/steps/*.steps.js`],
 
-        feauture:[`${projectDir}/src/ui/features/**/*.feature`],
+        feauture:[`../src/ui/features/**/*.feature`],
         // <boolean> show full backtrace for errors
         backtrace: false,
         // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
@@ -182,6 +191,8 @@ export const config: WebdriverIO.Config = {
         ignoreUndefinedDefinitions: false
     } as WebdriverIO.CucumberOpts,
     ...hooks,
+
+
 
     //
     // =====
@@ -347,3 +358,4 @@ export const config: WebdriverIO.Config = {
     // }
 
 }
+console.log(`!!!!${config.cucumberOpts.require}`)

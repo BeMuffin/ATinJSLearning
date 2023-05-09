@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:ui": "npm run build && npm run lint wdio ./_dist/wdio.conf.js",
-    "wdio": "wdio run ./wdio.conf.ts",
+    "test:ui": "npm run build && npm run lint && npx wdio run _dist/wdio.conf.js",
+    "wdio": "wdio run ./wdio.conf.js",
     "lint": "eslint --ext .ts src/",
     "build": "tsc -p tsconfig.json"
   },
@@ -49,6 +49,7 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "wdio-chromedriver-service": "^8.1.1",
+    "wdio-docker-service": "^3.2.1",
     "wdio-eslinter-service": "^0.0.4",
     "wdio-reportportal-reporter": "^7.6.0",
     "wdio-reportportal-service": "^7.3.1"
