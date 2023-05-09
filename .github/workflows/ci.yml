@@ -34,12 +34,13 @@ jobs:
       - name: Run tests
         # run: docker run my-docker-image:latest npm run wdio
         run: docker-compose up --build
+      - name: Stop Docker containers
+        run: docker-compose down
     env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   lint:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Install dependencies
