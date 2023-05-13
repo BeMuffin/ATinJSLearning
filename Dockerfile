@@ -25,4 +25,3 @@ COPY . .
 
 # Run the tests
 CMD ["npm", "run", "test:ui"]
-RUN docker-compose down
