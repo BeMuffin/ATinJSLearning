@@ -39,7 +39,7 @@ jobs:
       #   run: docker-compose down
       - name: Stop Docker container
         if: always()
-        run: docker stop $(docker ps -aqf "ancestor=my-image")
+        run: docker ps -a -q --filter ancestor=my-image:latest
     env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
