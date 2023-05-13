@@ -30,16 +30,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Build docker image
-        run: docker build -t my-docker-image:latest .
+        run: docker build -t my-image .
       - name: Run tests in docker
-        run: docker run --rm my-docker-image:latest npm run test:ui
+        run: docker run --rm my-image npm run test:ui
       # - name: Run tests
       #   run: docker-compose up --build
       # - name: Stop Docker containers
       #   run: docker-compose down
       - name: Stop Docker container
         if: always()
-        run: docker stop $(docker ps -q --filter ancestor=my-docker-image:latest)
+        run: docker stop $(docker ps -aqf "ancestor=my-image")
     env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
