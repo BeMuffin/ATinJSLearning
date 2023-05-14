@@ -58,7 +58,7 @@ jobs:
           projectBaseDir: ./
         env:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-      - run: sonar-scanner -Dsonar.projectKey=${{secrets.SONARQUBE_PROJECT_KEY}}  -Dsonar.sources=./
+      - run: sonar-scanner -Dsonar.projectKey=${{secrets.SONARQUBE_PROJECT_KEY}} -Dsonar.organization=${{secrets.ORG_KEY}}  -Dsonar.sources=./
 
   # quality-check:
   #   runs-on: ubuntu-latest
