@@ -162,8 +162,8 @@ export const config: WebdriverIO.Config = {
           'sonarqube',
           {
             baseUrl: 'http://localhost:9000',
-            token: '<SONARQUBE_AUTH_TOKEN>',
-            projectKey: '<YOUR_PROJECT_KEY>',
+            token: process.env.SONARQUBE_TOKEN,
+            projectKey: process.env.PROJECT_KEY,
             projectName: 'ATinJSProject',
             version: '1.0.0',
             reportPath: './reports/cucumber_report.json',
@@ -369,4 +369,3 @@ export const config: WebdriverIO.Config = {
     // }
 
 }
-console.log(`!!!!${config.cucumberOpts.require}`)
