@@ -157,7 +157,18 @@ export const config: WebdriverIO.Config = {
           autoAttachScreenshots: true,
           autoAttachAllureScreenshots: true,
           outputDir: './reports/rp-results'
-        }]
+        }],
+        [
+          'sonarqube',
+          {
+            baseUrl: 'http://localhost:9000',
+            token: '<SONARQUBE_AUTH_TOKEN>',
+            projectKey: '<YOUR_PROJECT_KEY>',
+            projectName: 'ATinJSProject',
+            version: '1.0.0',
+            reportPath: './reports/cucumber_report.json',
+          },
+        ],
       ],
 
 

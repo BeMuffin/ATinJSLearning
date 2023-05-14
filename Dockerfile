@@ -3,6 +3,16 @@
 # Use an official Node.js runtime as a parent image
 FROM node:16
 
+RUN apt-get update \
+    && apt-get install -y unzip \
+    && curl -L -o sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip \
+    && unzip sonar-scanner-cli.zip \
+    && rm sonar-scanner-cli.zip \
+    && mv sonar-scanner-* /opt/sonar-scanner \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV PATH $PATH:/opt/sonar-scanner/bin
 # Set the working directory to /project
 WORKDIR /
 
