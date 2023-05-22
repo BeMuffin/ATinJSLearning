@@ -2,9 +2,11 @@ import ReportPortalReporter from 'wdio-reportportal-reporter'
 import RpService  from 'wdio-reportportal-service'
 import fs from 'fs-extra'
 import path from 'path'
+import log4js from 'log4js';
+const logger = log4js.getLogger();
 
 export const hooks = {
-    afterStep: async function (step, scenario, context, result) {
+    afterStep: async function (result) {
         const screenshotDir = './reports/rp-results/screenshots/';
         if (result.error) {
             const timestamp = new Date().toISOString().replace(/[:]/g, '-');
@@ -21,9 +23,17 @@ export const hooks = {
             });
         }
     },
-    onComplete: async function (_, config) {
+    onComplete: async function (config) {
         const link = await RpService.getLaunchUrl(config);
-        console.log(`Report portal link ${link}`)
+        const log = await browser.execute(() => {
+            return {
+                message: `Report Portal Link: ${link}`,
+                level: log4js.levels,
+                startTime: new Date().getTime(),
+            };
+        });
+        logger.info(log);
+        logger.info(`Report Portal Link: ${link}`);
     },
 
 }

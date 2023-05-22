@@ -2,7 +2,7 @@ import Page from './page';
 
 class LoginPage extends Page {
   url = '/#login';
-  fullUrl = `https://rp.epam.com/ui/#login`;
+  fullUrl = `http://localhost:8080/ui/`;
 
   get ['Login input field']() {
     return `[name='login']`;

@@ -4,7 +4,6 @@ import * as path from 'path';
 dotenv.config();
 
 const projectDir = path.join(__dirname, '').replace(/\\/g, '/')
-console.log(`!!!!!!!!!!!!!!!!!!!${projectDir}`)
 
 export const config: WebdriverIO.Config = {
     runner: 'local',
@@ -17,7 +16,9 @@ export const config: WebdriverIO.Config = {
     },
 
     specs: [
-        `../src/ui/features/**/*.feature`
+        `../src/ui/features/**/*.feature`,
+        `${projectDir}/src/ui/test/**/*.spec.js`
+
     ],
     // Patterns to exclude.
     exclude: [
@@ -56,7 +57,7 @@ export const config: WebdriverIO.Config = {
         browserName: 'chrome',
         'goog:chromeOptions': {
           args: [
-            '--headless',
+            // '--headless',
             '--disable-gpu',
             '--no-sandbox',
             '--disable-dev-shm-usage',
@@ -158,17 +159,6 @@ export const config: WebdriverIO.Config = {
           autoAttachAllureScreenshots: true,
           outputDir: './reports/rp-results'
         }],
-        [
-          'sonarqube',
-          {
-            baseUrl: 'http://localhost:9000',
-            token: process.env.SONARQUBE_TOKEN,
-            projectKey: process.env.PROJECT_KEY,
-            projectName: 'ATinJSProject',
-            version: '1.0.0',
-            reportPath: './reports/cucumber_report.json',
-          },
-        ],
       ],
 
 
@@ -199,11 +189,10 @@ export const config: WebdriverIO.Config = {
         // <number> timeout for step definitions
         timeout: 60000,
         // <boolean> Enable this config to treat undefined definitions as warnings.
-        ignoreUndefinedDefinitions: false
+        ignoreUndefinedDefinitions: false,
+        threads: 4,
     } as WebdriverIO.CucumberOpts,
     ...hooks,
-
-
 
     //
     // =====
