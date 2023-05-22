@@ -37,7 +37,7 @@ export default abstract class Page {
   }
 
   async waitForSelectElementFromList(openListButtonSelector: string, listSelector: string, value: string) {
-    this.waitForElementAndClick(openListButtonSelector);
+    await this.waitForElementAndClick(openListButtonSelector);
     const elementsList = await $$(listSelector);
     const selectedLink = elementsList.find(async link => await link.getText() === value);
     selectedLink.waitForClickable({ timeout: 30000 });
