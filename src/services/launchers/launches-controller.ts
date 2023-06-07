@@ -1,5 +1,4 @@
-import { AxiosResponse } from 'axios';
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios'
 import * as dotenv from 'dotenv';
 
 dotenv.config();
