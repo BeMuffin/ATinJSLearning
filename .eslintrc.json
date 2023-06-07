@@ -1,0 +1,25 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended"
+  ],
+  "ignorePatterns": ["node_modules/", "_dist/", "config/"],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "rules": {
+    "quotes": [2, "single",{
+      "allowTemplateLiterals": true
+    }],
+    "no-undef":0,
+    "eol-last": [2, "always"],
+    "no-console": 0,
+    "no-unused-vars": [2, { "args": "none" }]
+  }
+}

@@ -1,19 +1,11 @@
-import type { Options } from '@wdio/types'
-import ReportPortalReporter from 'wdio-reportportal-reporter'
-import {RpService}  from 'wdio-reportportal-service'
+import { hooks } from './wdio-hooks';
 import * as dotenv from 'dotenv'
 import * as path from 'path';
 dotenv.config();
-import fs from 'fs-extra'
 
-const projectDir = path.join(__dirname, '..');
+const projectDir = path.join(__dirname, '').replace(/\\/g, '/')
 
-export const config: Options.Testrunner = {
-    //
-    // ====================
-    // Runner Configuration
-    // ====================
-    // WebdriverIO supports running e2e tests as well as unit and component tests.
+export const config: WebdriverIO.Config = {
     runner: 'local',
     autoCompileOpts: {
         autoCompile: true,
@@ -23,27 +15,10 @@ export const config: Options.Testrunner = {
         }
     },
 
-
-
-
-    //
-    // ==================
-    // Specify Test Files
-    // ==================
-    // Define which test specs should run. The pattern is relative to the directory
-    // of the configuration file being run.
-    //
-    // The specs are defined as an array of spec files (optionally using wildcards
-    // that will be expanded). The test for each spec file will be run in a separate
-    // worker process. In order to have a group of spec files run in the same worker
-    // process simply enclose them in an array within the specs array.
-    //
-    // If you are calling `wdio` from an NPM script (see https://docs.npmjs.com/cli/run-script),
-    // then the current working directory is where your `package.json` resides, so `wdio`
-    // will be called from there.
-    //
     specs: [
-        `${projectDir}/src/ui/features/**/*.feature`
+        `../src/ui/features/**/*.feature`,
+        `${projectDir}/src/ui/test/**/*.spec.js`
+
     ],
     // Patterns to exclude.
     exclude: [
@@ -78,8 +53,16 @@ export const config: Options.Testrunner = {
         // 5 instances get started at a time.
         maxInstances: 5,
         //
+        acceptInsecureCerts: true,
         browserName: 'chrome',
-        acceptInsecureCerts: true
+        'goog:chromeOptions': {
+          args: [
+            // '--headless',
+            '--disable-gpu',
+            '--no-sandbox',
+            '--disable-dev-shm-usage',
+          ],
+        },
         // If outputDir is provided WebdriverIO can capture driver session logs
         // it is possible to configure which logTypes to include/exclude.
         // excludeDriverLogs: ['*'], // pass '*' to exclude all driver session logs
@@ -132,7 +115,7 @@ export const config: Options.Testrunner = {
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
-    services: ['chromedriver'],
+    services: ['chromedriver','docker'],
 
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
@@ -175,17 +158,18 @@ export const config: Options.Testrunner = {
           autoAttachScreenshots: true,
           autoAttachAllureScreenshots: true,
           outputDir: './reports/rp-results'
-        }]
+        }],
       ],
 
 
     //
     // If you are using Cucumber you need to specify the location of your step definitions.
+
     cucumberOpts: {
         // <string[]> (file/dir) require files before executing features
-        require: [`${projectDir}/_dist/src/ui/steps/**/*.steps.js`],
+        require: [`${projectDir}/src/ui/steps/*.steps.js`],
 
-        feauture:[`${projectDir}/src/ui/features/**/*.feature`],
+        feauture:[`../src/ui/features/**/*.feature`],
         // <boolean> show full backtrace for errors
         backtrace: false,
         // <string[]> ("extension:module") require files with the given EXTENSION after requiring MODULE (repeatable)
@@ -205,8 +189,10 @@ export const config: Options.Testrunner = {
         // <number> timeout for step definitions
         timeout: 60000,
         // <boolean> Enable this config to treat undefined definitions as warnings.
-        ignoreUndefinedDefinitions: false
-    },
+        ignoreUndefinedDefinitions: false,
+        threads: 4,
+    } as WebdriverIO.CucumberOpts,
+    ...hooks,
 
     //
     // =====
@@ -306,32 +292,6 @@ export const config: Options.Testrunner = {
      * @param {number}             result.duration  duration of scenario in milliseconds
      * @param {object}             context          Cucumber World object
      */
-    afterStep: async function (step, scenario, result, context) {
-      const screenshotDir = './reports/rp-results/screenshots/';
-      if (result.error) {
-        const timestamp = new Date().toISOString().replace(/[:]/g, '-');
-        const screenshotPath = path.join(screenshotDir, `${timestamp}.png`);
-        const screenshot = await browser.takeScreenshot();
-        fs.outputFileSync(screenshotPath, screenshot, { encoding: 'base64' });
-        ReportPortalReporter.sendLog('ERROR', {
-          level: 'error',
-          file: {
-            name: `${timestamp}.png`,
-            data: screenshot,
-            type: 'image/png',
-          },
-        });
-      }
-    },
-    //   if (!result.passed) {
-    //     let failureObject = {type:'',error:context,title:''};
-    //     failureObject.type = step.type;
-    //     failureObject.title = `${step.id}${step.text}`;
-    //     const screenShot = await global.browser.takeScreenshot();
-    //     let attachment = Buffer.from(screenShot, 'base64');
-    //     ReportPortalReporter.sendFileToTest(failureObject, 'ERROR', "screnshot.png", attachment);
-    // }
-
 
     /**
      *
@@ -388,10 +348,7 @@ export const config: Options.Testrunner = {
      * @param {Array.<Object>} capabilities list of capabilities details
      * @param {<Object>} results object containing test results
      */
-    onComplete: async function (_, config) {
-      const link = await RpService.getLaunchUrl(config);
-      console.log(`Report portal link ${link}`)
-    }
+
     /**
     * Gets executed when a refresh happens.
     * @param {string} oldSessionId session ID of the old session
@@ -399,4 +356,5 @@ export const config: Options.Testrunner = {
     */
     // onReload: function(oldSessionId, newSessionId) {
     // }
+
 }

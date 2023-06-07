@@ -1,0 +1,64 @@
+# version: '3'
+# services:
+#   app:
+#     build:
+#       context: .
+#     ports:
+#       - "4444:4444"
+#     volumes:
+#       - .:/app
+#   tests:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     volumes:
+#       - .:/app
+#     depends_on:
+#       - app
+#     environment:
+#       - NODE_ENV=ci
+version: '3'
+services:
+  app:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    depends_on:
+      - chrome
+    environment:
+      - NODE_ENV=production
+  chrome:
+    image: selenium/standalone-chrome
+    ports:
+      - "4444:4444"
+
+  sonarqube:
+    image: sonarqube:lts
+    ports:
+      - "9000:9000"
+    environment:
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://sonarqube-db:5432/sonarqube
+    depends_on:
+      - sonarqube-db
+    networks:
+      - sonarqube-network
+
+  sonarqube-db:
+    image: postgres:12
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+      - POSTGRES_DB=sonarqube
+    volumes:
+      - sonarqube-db-data:/var/lib/postgresql/data
+    networks:
+      - sonarqube-network
+
+volumes:
+  sonarqube-db-data:
+
+networks:
+  sonarqube-network:
