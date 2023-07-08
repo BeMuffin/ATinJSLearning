@@ -18,16 +18,16 @@ class DashboardPage extends BasePage {
 
   waitForOpenLaunchesPage() {
     const currentResolution = super.getBrowserResolution();
-    const isMenuDisplayed = super.isElementDisplayed(MenuComponent['Sidebar Menu Container'])
-    if(currentResolution.width < 768 || isMenuDisplayed === false){
-      super.waitForElementAndClick(MenuComponent['Hamburger Menu Button'])
+    const isMenuDisplayed = super.isElementDisplayed(
+      MenuComponent['Sidebar Menu Container']
+    );
+    if (currentResolution.width < 768 || isMenuDisplayed === false) {
+      super.waitForElementAndClick(MenuComponent['Hamburger Menu Button']);
       super.waitForElementAndClick(MenuComponent['Launches Menu Button']);
-    }
-    else{
+    } else {
       super.waitForElementAndClick(MenuComponent['Launches Menu Button']);
     }
   }
-
 }
 
 export default new DashboardPage();

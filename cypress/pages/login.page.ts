@@ -1,5 +1,5 @@
 import BasePage from './base.page';
-import {urls} from '../fixtures/urls'
+import { urls } from '../fixtures/urls';
 
 class LoginPage extends BasePage {
   constructor() {
@@ -18,7 +18,7 @@ class LoginPage extends BasePage {
     return 'button[type=submit]';
   }
 
-  get ['Bad Credentials Notification'] () {
+  get ['Bad Credentials Notification']() {
     return '#notification-root p';
   }
 
@@ -32,8 +32,8 @@ class LoginPage extends BasePage {
     cy.get(this['Login button']).click();
   }
 
-  waitForBadCredentialsNotificationDisplay(){
-    return super.waitForElementDisplay(this['Bad Credentials Notification'])
+  waitForBadCredentialsNotificationDisplay() {
+    return super.waitForElementDisplay(this['Bad Credentials Notification']);
   }
 }
 
