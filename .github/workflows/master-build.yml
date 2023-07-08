@@ -1,10 +1,11 @@
 name: CI
 
 on:
-  pull_request:
-    branches: [ "master" ]
-
-  workflow_dispatch:
+    schedule:
+        - cron: "0 0 * * *"
+    push:
+        branches: [ "master" ]
+    workflow_dispatch:
 
 jobs:
   build:
@@ -27,20 +28,13 @@ jobs:
         run: npm ci
       - name: Build docker image
         run: docker build -t my-image .
+      - name: Run UI tests in docker
+        run: docker run --rm my-image npm run test:ui
+      - name: Run API tests in docker
+        run: docker run --rm my-image npm run apiJest
       - name: Stop Docker container
         if: always()
         run: docker ps -a -q --filter ancestor=my-image:latest
-      - name: Run tests UI
-        run: npx wdio run _dist/wdio.conf.js
-      - name: Publish test results to Report Portal
-        run: |
-          curl -v -X POST \
-            -H "Content-Type: multipart/form-data" \
-            -F "file=@./path/to/test-results.xml" \
-            -u "username:password" \
-            https://report-portal.example.com/api/v1/data/publish/your_project
-
-
     env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

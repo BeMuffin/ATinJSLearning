@@ -4,3 +4,4 @@ reports/
 .env
 _dist/
 .dockerignore
+cypress/cypress.env.json
