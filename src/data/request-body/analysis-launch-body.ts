@@ -1,6 +1,6 @@
-export const analysisLauncherBody = {
+export const analysisLaunchBody = {
   analyzeItemsMode: ['TO_INVESTIGATE'],
   analyzerMode: 'ALL',
   analyzerTypeName: 'autoAnalyzer',
-  launchId: '',
+  launchId: 0,
 };

@@ -7,12 +7,13 @@
         "types": [
             "node",
             "@wdio/globals/types",
+            "@wdio/types",
             "expect-webdriverio",
             "@wdio/cucumber-framework",
+            "dotenv",
             "@types/jest"
-
         ],
-        "target": "es2022",
+        "target": "es2019",
         "skipLibCheck": true
     },
     "include": ["src/**/*.ts", "*.ts", "config/**/*.ts", "scripts/**/*.ts"],
@@ -20,7 +21,8 @@
         "node_modules/",
         ".vscode/",
         ".github/",
-        "reports/"
+        "reports/",
+        "cypress/"
     ]
 
 }

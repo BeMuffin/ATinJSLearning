@@ -1,9 +1,9 @@
 import type { Config } from '@jest/types';
 
 const config: Config.InitialOptions = {
+  testEnvironment: 'node',
   maxConcurrency: 5,
   preset: 'ts-jest',
-  testEnvironment: 'node',
   roots: ['../..'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',

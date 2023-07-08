@@ -1,0 +1,71 @@
+name: CI
+
+on:
+    schedule:
+        - cron: "0 0 * * *"
+    push:
+        branches: [ "master" ]
+    workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      chrome:
+        image: selenium/standalone-chrome
+        ports:
+          - "4445:4444"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Setup Node.js
+        uses: actions/setup-node@v2.5.2
+        with:
+            node-version: 16.x
+      - name: Install dependencies
+        run: npm ci
+      - name: Build docker image
+        run: docker build -t my-image .
+      - name: Run UI tests in docker
+        run: docker run --rm my-image npm run test:ui
+      - name: Run API tests in docker
+        run: docker run --rm my-image npm run apiJest
+      - name: Stop Docker container
+        if: always()
+        run: docker ps -a -q --filter ancestor=my-image:latest
+      - name: Create Jira Issue
+        if: failure()
+        env:
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        run: |
+          curl --request POST \
+            --url 'https://hannabicheuskaya.atlassian.net/rest/api/3/issue' \
+            --header 'Authorization: Basic BASE64_ENCODED_STRING' \
+            --header 'Content-Type: application/json' \
+            --data '{
+              "fields": {
+                "project": {
+                  "key": "ATinJS"
+                },
+                "summary": "Build or test failure",
+                "description": "A build or test failed on the branch ${GITHUB_REF}.",
+                "issuetype": {
+                  "name": "Task"
+                }
+              }
+            }'
+    env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: npm ci
+      - name: Run linter
+        run: npm run lint
