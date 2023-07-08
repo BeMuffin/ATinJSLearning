@@ -30,17 +30,6 @@ jobs:
       - name: Stop Docker container
         if: always()
         run: docker ps -a -q --filter ancestor=my-image:latest
-      - name: Run tests UI
-        run: npx wdio run _dist/wdio.conf.js
-      - name: Publish test results to Report Portal
-        run: |
-          curl -v -X POST \
-            -H "Content-Type: multipart/form-data" \
-            -F "file=@./path/to/test-results.xml" \
-            -u "username:password" \
-            https://report-portal.example.com/api/v1/data/publish/your_project
-
-
     env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

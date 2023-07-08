@@ -35,9 +35,31 @@ jobs:
       - name: Stop Docker container
         if: always()
         run: docker ps -a -q --filter ancestor=my-image:latest
+      - name: Create Jira Issue
+        if: failure()
+        env:
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        run: |
+          curl --request POST \
+            --url 'https://hannabicheuskaya.atlassian.net/rest/api/3/issue' \
+            --header 'Authorization: Basic BASE64_ENCODED_STRING' \
+            --header 'Content-Type: application/json' \
+            --data '{
+              "fields": {
+                "project": {
+                  "key": "ATinJS"
+                },
+                "summary": "Build or test failure",
+                "description": "A build or test failed on the branch ${GITHUB_REF}.",
+                "issuetype": {
+                  "name": "Task"
+                }
+              }
+            }'
     env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
 
   lint:
     runs-on: ubuntu-latest
